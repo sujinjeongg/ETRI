@@ -1,0 +1,65 @@
+{
+  "name": "SoCExtension",
+  "displayName": "SoC_Extension",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:SoCExtension.runGem5",
+    "onCommand:SoCExtension.runProfile",
+    "onCommand:SoCExtension.runSoCDesign",
+    "onCommand:SoCExtension.runLog",
+    "onCommand:SoCExtension.runParse"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "SoCExtension.runGem5",
+        "title": "Run gem5"
+      },
+      {
+        "command": "SoCExtension.runProfile",
+        "title": "Run gem5 with Profile"
+      },
+      {
+        "command": "SoCExtension.runSoCDesign",
+        "title": "Run gem5 with SoC Design"
+      },
+      {
+        "command": "SoCExtension.runLog",
+        "title": "Run gem5 with Log"
+      },
+      {
+        "command": "SoCExtension.runParse",
+        "title": "Run gem5 with Parsing"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -p ./ --watch",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.32",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.96.0",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.16.0",
+    "typescript": "^5.7.2"
+  }
+}
