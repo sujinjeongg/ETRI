@@ -7,7 +7,7 @@
   "x86board_se.py": {
     "simulation_seconds": 0.054387,
     "ticks": 54386595000,
-    "op_rate": 3372713,
+    "op_rate": 3379494,
     "cpi": 2.035018,
     "ipc": 0.491396,
     "mem_bus_latency": null
@@ -19,5 +19,13 @@
     "cpi": 182.403117,
     "ipc": 0.005482,
     "mem_bus_latency": 3332
+  },
+  "": {
+    "simulation_seconds": 0.054387,
+    "ticks": 54386595000,
+    "op_rate": 3379494,
+    "cpi": 2.035018,
+    "ipc": 0.491396,
+    "mem_bus_latency": null
   }
 }
