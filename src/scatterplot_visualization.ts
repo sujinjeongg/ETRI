@@ -108,12 +108,19 @@ function getScatterPlotWebviewContent(): string {
                     const innerWidth = width - margin.left - margin.right;
                     const innerHeight = height - margin.top - margin.bottom;
 
+                    const xExtent = d3.extent(data, d => d.x);
+                    const yExtent = d3.extent(data, d => d.y);
+
+                    // 여유 공간 (padding) 설정 - 데이터 범위의 10% 추가
+                    const xPadding = (xExtent[1] - xExtent[0]) * 0.1;
+                    const yPadding = (yExtent[1] - yExtent[0]) * 0.1;
+
                     const xScale = d3.scaleLinear()
-                        .domain(d3.extent(data, d => d.x))
+                        .domain([xExtent[0] - xPadding, xExtent[1] + xPadding]) // 좌우로 10% 확장
                         .range([0, innerWidth]);
 
                     const yScale = d3.scaleLinear()
-                        .domain(d3.extent(data, d => d.y))
+                        .domain([yExtent[0] - yPadding, yExtent[1] + yPadding]) // 위아래로 10% 확장
                         .range([innerHeight, 0]);
 
                     const g = svg.append("g").attr("transform", \`translate(\${margin.left},\${margin.top})\`);
