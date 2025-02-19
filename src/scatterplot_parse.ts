@@ -18,10 +18,6 @@ export async function runGem5AndParse() {
     terminal.sendText(command);
     terminal.show();
 
-    // stats.txt 데이터 파싱 
-    // parseStats(statsFilePath, scriptName);
-    console.log("📢 Waiting for stats.txt update...");
-
     // stats.txt 변경 감지 후 파싱 실행
     fs.watchFile(statsFilePath, { interval: 50000 }, (curr, prev) => {
         if (curr.mtime > prev.mtime) {
@@ -36,33 +32,28 @@ export async function runGem5AndParse() {
     });
 }
 
-/* stats.txt 주요 지표 데이터 파싱 */
+/* stats.txt 전체 데이터 파싱 */
 function parseStats(statsFile: string, scriptName: string) {
     try {
         const data = fs.readFileSync(statsFile, 'utf-8');
-        const parsedData: Record<string, number> = {};
+        const parsedData: Record<string, any> = {};
 
-        const metrics: Record<string, string> = {
-            "simulation_seconds": "simSeconds",
-            "ipc": "system.cpu.ipc",
-            "cpi": "system.cpu.cpi",
-            "ticks": "simTicks",
-            "op_rate": "hostOpRate",
-            "mem_bus_latency": "system.mem_ctrl.dram.avgBusLat"
-        };
-
+        // stats.txt의 모든 라인 파싱
         data.split("\n").forEach(line => {
-            Object.entries(metrics).forEach(([key, pattern]) => {
-                if (line.startsWith(pattern)) {
-                    parsedData[key] = parseFloat(line.split(/\s+/)[1]);
-                }
-            });
+            const [key, ...valueParts] = line.split(/\s+/);
+            if (key && key !== "----------") {
+                // 주석(#) 이후 제거
+                const valueString = valueParts.join(" ").split("#")[0].trim();
+                // 숫자로 변환 가능하면 변환
+                const value = isNaN(Number(valueString)) ? valueString : parseFloat(valueString);
+                parsedData[key] = value;
+            }
         });
 
         console.log(`📊 Parsed Data for ${scriptName}:`, parsedData);
 
         // JSON 파일에 저장 (five_stats.json)
-        const outputJsonPath = path.join(__dirname, '../src', 'five_stats.json');
+        const outputJsonPath = path.join(__dirname, '../src', 'scatterplot_stats.json');
         let existingData: Record<string, any> = {};
 
         // 기존 JSON 데이터 불러오기

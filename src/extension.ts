@@ -5,7 +5,8 @@ import { parseStatsFile, watchStatsFile } from './stats'; // stats.ts 파일 imp
 import { selectAndRunProfile } from './profiles'; // profiles.ts 파일 import
 import { createSoCDesignWebview } from './socDesign'; // socDesign.ts 파일 import
 import { createLogWebview } from './log'; // log.ts 파일 import
-import { runGem5AndParse } from './five_stats'; // parse.ts 파일 import
+import { runGem5AndParse } from './scatterplot_parse'; // scatterplot_parse.ts 파일 import
+import { createScatterplotWebview } from './scatterplot_visualization'; // scatterplot_visualization.ts 파일 import
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -117,6 +118,7 @@ export function activate(context: vscode.ExtensionContext) {
   const runSoCDesignCommand = vscode.commands.registerCommand('SoCExtension.runSoCDesign', createSoCDesignWebview);
   const runLogCommand = vscode.commands.registerCommand('SoCExtension.runLog', createLogWebview);
   const runParseCommand = vscode.commands.registerCommand('SoCExtension.runParse', runGem5AndParse);
+  const runScatterPlotCommand = vscode.commands.registerCommand('SoCExtension.runScatterPlot', createScatterplotWebview);
   context.subscriptions.push(runGem5Command, runProfileCommand, runSoCDesignCommand, runLogCommand, runParseCommand);
 }
 
