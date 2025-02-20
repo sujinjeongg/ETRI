@@ -4,15 +4,11 @@ import * as fs from 'fs';
 
 /* SoC design 후 gem5 실행 */
 async function socDesignAndRun(config: any) {
-    let scriptContent = `from gem5.components.boards.x86_board import X86Board
-from gem5.components.cachehierarchies.ruby.mesi_two_level_cache_hierarchy import MESITwoLevelCacheHierarchy
-from gem5.components.memory.single_channel import SingleChannelDDR3_1600
-from gem5.components.processors.cpu_types import CPUTypes
-from gem5.components.processors.simple_switchable_processor import SimpleSwitchableProcessor
-from gem5.isas import ISA
-from gem5.resources.resource import obtain_resource
-from gem5.simulate.simulator import Simulator
+    let scriptContent = `from gem5.components.cachehierarchies.ruby.mesi_two_level_cache_hierarchy import MESITwoLevelCacheHierarchy
+import m5
+from m5.objects import *
 
+# Here we setup a MESI Two Level Cache Hierarchy.
 cache_hierarchy = MESITwoLevelCacheHierarchy(
     l1d_size="${config.l1dSize}kB",
     l1d_assoc=${config.l1dAssoc},
@@ -23,34 +19,49 @@ cache_hierarchy = MESITwoLevelCacheHierarchy(
     num_l2_banks=1,
 )
 
-memory = SingleChannelDDR3_1600(size="${config.memorySize}GB")
+root = Root(full_system=False)  # SE 모드 사용
 
-processor = SimpleSwitchableProcessor(
-    starting_core_type=CPUTypes.${config.startingCore},
-    switch_core_type=CPUTypes.${config.switchCore},
-    isa=ISA.X86,
-    num_cores=${config.numCores},
-)
+sys = System()
+sys.clk_domain = SrcClockDomain(clock="${config.clockSize}GHz", voltage_domain=VoltageDomain())
+sys.mem_mode = "${config.memMode}"
+sys.mem_ranges = [AddrRange("${config.addrRange}MB")] 
 
-board = X86Board(
-    clk_freq="${config.clkFreq}GHz",
-    processor=processor,
-    memory=memory,
-    cache_hierarchy=cache_hierarchy,
-)
+sys.membus = SystemXBar()
 
-command = "m5 exit; echo 'Running custom SoC design'; m5 exit;"
-board.set_kernel_disk_workload(
-    kernel=obtain_resource("x86-linux-kernel-4.4.186"),
-    disk_image=obtain_resource("x86-ubuntu-18.04-img"),
-    readfile_contents=command,
-)
+sys.cpu = ${config.cpu}()
+sys.cpu.createThreads()
 
-simulator = Simulator(board=board)
-simulator.run()
-processor.switch()
-simulator.run()
-`;
+sys.cpu.createInterruptController()
+sys.cpu.interrupts[0].pio = sys.membus.mem_side_ports
+sys.cpu.interrupts[0].int_requestor = sys.membus.cpu_side_ports
+
+sys.mem_ctrl = MemCtrl()
+sys.mem_ctrl.dram = DDR3_1600_8x8(range=sys.mem_ranges[0])
+sys.mem_ctrl.port = sys.membus.mem_side_ports
+
+sys.cpu.icache_port = sys.membus.cpu_side_ports
+sys.cpu.dcache_port = sys.membus.cpu_side_ports
+
+sys.workload = X86EmuLinux()
+
+process = Process()
+process.cmd = ["/UHome/etri33301/SoCExtension/gem5/configs/matrix-multiply"] 
+#process.cmd = ["/UHome/etri33294/Next_Generation_Memory_Platform/gem5/tests/test-progs/hello/bin/x86/linux/hello32"]
+
+sys.cpu.workload = process
+
+sys.system_port = sys.membus.cpu_side_ports
+
+root.system = sys
+for obj in root.descendants():
+    print(obj)
+
+m5.instantiate()
+
+print("gem5 Simulation 시작!")
+exit_event = m5.simulate()
+m5.stats.dump()
+print(f"Exiting @ tick {m5.curTick()} because {exit_event.getCause()}")`;
 
     // 동적으로 업데이트된 scriptContent로 gem5 실행
     const scriptPath = path.join(__dirname, '../src', 'generated_soc_script.py');
@@ -97,7 +108,7 @@ function getSoCDesignWebviewContent(): string {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>SoC Design</title>
-        </head>
+        </head> 
         <body>
             <h1>Configure your SoC</h1>
             <label>L1D Cache Size (kB):</label><input id="l1dSize" type="number" value="16"><br><br>
@@ -106,9 +117,11 @@ function getSoCDesignWebviewContent(): string {
             <label>L1I Assoc:</label><input id="l1iAssoc" type="number" value="8"><br><br>
             <label>L2 Cache Size (kB):</label><input id="l2Size" type="number" value="256"><br><br>
             <label>L2 Assoc:</label><input id="l2Assoc" type="number" value="16"><br><br>
-            <label>Memory Size (GB):</label><input id="memorySize" type="number" value="3"><br><br>
-            <label>Number of Cores:</label><input id="numCores" type="number" value="2"><br><br>
-            <label>Clock Frequency (GHz):</label><input id="clkFreq" type="text" value="3"><br><br>
+            <label>Clock Size:</label><input id="clockSize" type="number" value="1"><br><br>
+            <label>L2 Assoc:</label><input id="l2Assoc" type="number" value="16"><br><br>
+            <label>Memory Mode:</label><input id="memMode" type="text" value="atomic"><br><br>
+            <label>Address Range (MB):</label><input id="addrRange" type="number" value="128"><br><br>
+            <label>CPU type:</label><input id="cpu" type="text" value="X86AtomicSimpleCPU"><br><br>
             <button onclick="runSimulation()">Run Simulation</button>
             <script>
                 const vscode = acquireVsCodeApi();
@@ -120,11 +133,10 @@ function getSoCDesignWebviewContent(): string {
                         l1iAssoc: document.getElementById('l1iAssoc').value,
                         l2Size: document.getElementById('l2Size').value,
                         l2Assoc: document.getElementById('l2Assoc').value,
-                        memorySize: document.getElementById('memorySize').value,
-                        numCores: document.getElementById('numCores').value,
-                        clkFreq: document.getElementById('clkFreq').value,
-                        startingCore: 'TIMING',
-                        switchCore: 'O3'
+                        clockSize: document.getElementById('clockSize').value,
+                        memMode: document.getElementById('memMode').value,
+                        addrRange: document.getElementById('addrRange').value,
+                        cpu: document.getElementById('cpu').value,
                     };
                     vscode.postMessage({ type: 'runSimulation', data: config });
                 }
