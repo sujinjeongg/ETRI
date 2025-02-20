@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import * as path from "path";
 
 /* scatterplot_stats.json 로드 */
 async function loadScatterplotData(): Promise<any> {

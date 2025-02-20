@@ -52,7 +52,7 @@ function parseStats(statsFile: string, scriptName: string) {
 
         console.log(`📊 Parsed Data for ${scriptName}:`, parsedData);
 
-        // JSON 파일에 저장 (five_stats.json)
+        // JSON 파일에 저장 (scatterplot_stats.json)
         const outputJsonPath = path.join(__dirname, '../src', 'scatterplot_stats.json');
         let existingData: Record<string, any> = {};
 

@@ -39,6 +39,14 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }
 
+    // 터미널 연동하여 gem5 실행
+    const terminal = vscode.window.createTerminal({
+      name: 'gem5 simulation',
+      cwd: "/UHome/etri33301/SoCExtension/gem5"
+    });
+    terminal.sendText(`${gem5Binary} ${gem5Script}`);
+    terminal.show();
+
     /*
     // gem5 실행 후 메시지 창 출력
     exec(`${gem5Binary} ${gem5Script}`, (error, stdout, stderr) => {
@@ -53,11 +61,6 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`gem5 Output: ${stdout}`);
       });
     */
-
-    // 터미널 연동하여 gem5 실행
-    const terminal = vscode.window.createTerminal('gem5 simulation');
-    terminal.sendText(`${gem5Binary} ${gem5Script}`);
-    terminal.show();
 
     /*
     // gem5 실행 후 output.log 파일(자동 생성)에 결과 저장
@@ -119,7 +122,7 @@ export function activate(context: vscode.ExtensionContext) {
   const runLogCommand = vscode.commands.registerCommand('SoCExtension.runLog', createLogWebview);
   const runParseCommand = vscode.commands.registerCommand('SoCExtension.runParse', runGem5AndParse);
   const runScatterPlotCommand = vscode.commands.registerCommand('SoCExtension.runScatterPlot', createScatterplotWebview);
-  context.subscriptions.push(runGem5Command, runProfileCommand, runSoCDesignCommand, runLogCommand, runParseCommand);
+  context.subscriptions.push(runGem5Command, runProfileCommand, runSoCDesignCommand, runLogCommand, runParseCommand, runScatterPlotCommand);
 }
 
 /* Webview HTML 내용 생성 (gem5 stats.txt visualization) */
