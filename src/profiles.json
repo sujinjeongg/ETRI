@@ -13,6 +13,13 @@
             "gem5Binary": "build/X86/gem5.opt",
             "gem5Script": "configs/02-01-components-initial.py",
             "parameters": "--cpu-type=DerivO3CPU"
+        },
+        {
+            "name": "x86script2.py",
+            "gem5Path": "/UHome/etri33301/SoCExtension/gem5",
+            "gem5Binary": "build/X86/gem5.opt",
+            "gem5Script": "/UHome/etri33301/SoCExtension/gem5/configs/x86script2.py",
+            "parameters": ""
         }
     ]
 }

@@ -122,19 +122,33 @@ function getScatterPlotWebviewContent(): string {
                         .domain([yExtent[0] - yPadding, yExtent[1] + yPadding]) // 위아래로 10% 확장
                         .range([innerHeight, 0]);
 
+                    const colorScale = d3.scaleOrdinal(d3.schemeCategory10); // 각 점에 다른 색상 적용
+
                     const g = svg.append("g").attr("transform", \`translate(\${margin.left},\${margin.top})\`);
 
+                    // x축
                     g.append("g")
                         .attr("transform", \`translate(0,\${innerHeight})\`)
-                        .call(d3.axisBottom(xScale));
+                        .call(d3.axisBottom(xScale))
+                        .selectAll("path, line") // X축의 색상을 검정으로 변경
+                        .style("stroke", "black");
                     g.append("g").call(d3.axisLeft(yScale));
 
+                    // Y축
+                    g.append("g")
+                        .call(d3.axisLeft(yScale))
+                        .selectAll("path, line") // Y축의 색상을 검정으로 변경
+                        .style("stroke", "black");
+
                     // 데이터 포인트 추가
-                    const circles = g.selectAll("circle").data(data).enter().append("circle")
+                    g.selectAll("circle")
+                        .data(data)
+                        .enter()
+                        .append("circle")
                         .attr("cx", d => xScale(d.x))
                         .attr("cy", d => yScale(d.y))
                         .attr("r", 5)
-                        .style("fill", "blue");
+                        .style("fill", (d, i) => colorScale(i)); // 각 점에 다른 색상 적용
 
                     // 각 점 위에 스크립트 파일명 표시
                     g.selectAll("text.label")
@@ -148,18 +162,22 @@ function getScatterPlotWebviewContent(): string {
                         .style("font-size", "12px")
                         .style("fill", "black");
 
+                    // x축 레이블
                     svg.append("text")
                         .attr("x", width / 2)
                         .attr("y", height - 20)
                         .attr("text-anchor", "middle")
-                        .text(xLabel);
+                        .text(xLabel)
+                        .style("fill", "black");
 
+                    // y축 레이블
                     svg.append("text")
                         .attr("transform", "rotate(-90)")
                         .attr("x", -height / 2)
                         .attr("y", 25)
                         .attr("text-anchor", "middle")
-                        .text(yLabel);
+                        .text(yLabel)
+                        .style("fill", "black");
                 }
             </script>
         </body>
