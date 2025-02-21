@@ -88,17 +88,17 @@ export function activate(context: vscode.ExtensionContext) {
       });
     }
 
-    /* gem5 stats WebView Panel 생성 */
+    /* Bar chart WebView Panel 생성 */
     const statsPanel = vscode.window.createWebviewPanel(
-      'gem5Stats',
-      'gem5 Stats Visualization',
+      'barChart',
+      'Bar chart Visualization',
       vscode.ViewColumn.One,
       { enableScripts: true }
     );
-    console.log('gem5 stats WebView panel created.');
+    console.log('Bar chart WebView panel created.');
 
     // WebView HTML 내용 설정
-    statsPanel.webview.html = getStatsWebviewContent();
+    statsPanel.webview.html = barChartWebviewContent();
 
     // stats.txt 파일 변경 감지 및 WebView로 데이터 전송
     watchStatsFile(statsPath, (updatedStats) => {
@@ -109,12 +109,12 @@ export function activate(context: vscode.ExtensionContext) {
     // Webview에서 수신 이벤트 처리
     statsPanel.webview.onDidReceiveMessage(message => {
       if (message.type === 'ready') {
-        console.log('gem5 stats WebView is ready');
+        console.log('Bar chart WebView is ready');
         const initialStats = parseStatsFile(statsPath); // 초기 데이터 전달
         statsPanel.webview.postMessage({ type: 'update', data: initialStats });
       }
     });
-    console.log('gem5 stats WebView message handler registered');
+    console.log('Bar chart WebView message handler registered');
   });
 
   const runProfileCommand = vscode.commands.registerCommand('SoCExtension.runProfile', selectAndRunProfile);
@@ -126,14 +126,14 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 /* Webview HTML 내용 생성 (gem5 stats.txt visualization) */
-function getStatsWebviewContent(): string {
+function barChartWebviewContent(): string {
   return `
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>gem5 Stats Visualization</title>
+            <title>Bar Chart Visualization</title>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <style>
                 #label-selector {
@@ -146,7 +146,7 @@ function getStatsWebviewContent(): string {
             </style>
         </head>
         <body>
-            <h1>gem5 Stats Visualization</h1>
+            <h1>Bar Chart Visualization</h1>
 
             <!-- 다중 선택 가능한 select 메뉴 -->
             <label for="label-selector">Select Labels:</label>

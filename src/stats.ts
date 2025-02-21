@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-// stats.txt 파싱 
+/* stats.txt 파싱 */
 export function parseStatsFile(filePath: string): Record<string, string> {
     const stats: Record<string, string> = {};
     if (!fs.existsSync(filePath)) {
@@ -19,7 +19,7 @@ export function parseStatsFile(filePath: string): Record<string, string> {
     return stats;
 }
 
-// stats.txt 파일 변경 감지 
+/* stats.txt 파일 변경 감지 */
 export function watchStatsFile(filePath: string, callback: (data: Record<string, string>) => void): void {
     if (!fs.existsSync(filePath)) {
         console.error(`File not found: ${filePath}`);
