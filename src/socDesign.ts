@@ -75,7 +75,7 @@ print(f"Exiting @ tick {m5.curTick()} because {exit_event.getCause()}")`;
 }
 
 export function createSoCDesignWebview() {
-    /* SoC Design WebView Panel 생성 */
+    // SoC Design WebView Panel 생성
     const socDesignPanel = vscode.window.createWebviewPanel(
         'SoCDesign',
         'SoC Design',
@@ -118,10 +118,18 @@ function getSoCDesignWebviewContent(): string {
             <label>L2 Cache Size (kB):</label><input id="l2Size" type="number" value="256"><br><br>
             <label>L2 Assoc:</label><input id="l2Assoc" type="number" value="16"><br><br>
             <label>Clock Size:</label><input id="clockSize" type="number" value="1"><br><br>
-            <label>L2 Assoc:</label><input id="l2Assoc" type="number" value="16"><br><br>
-            <label>Memory Mode:</label><input id="memMode" type="text" value="atomic"><br><br>
+            <label>Memory Mode:</label>
+            <select id="memMode">
+                <option value="atomic">Atomic</option>
+                <option value="timing">Timing</option>
+                <option value="simple">Simple</option>
+            </select><br><br>
             <label>Address Range (MB):</label><input id="addrRange" type="number" value="128"><br><br>
-            <label>CPU type:</label><input id="cpu" type="text" value="X86AtomicSimpleCPU"><br><br>
+            <label>CPU type:</label><select id="cpu">
+                <option value="X86AtomicSimpleCPU">X86AtomicSimpleCPU</option>
+                <option value="TimingSimpleCPU">TimingSimpleCPU</option>
+                <option value="O3CPU">O3CPU</option>
+            </select><br><br>
             <button onclick="runSimulation()">Run Simulation</button>
             <script>
                 const vscode = acquireVsCodeApi();

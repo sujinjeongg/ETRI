@@ -5,9 +5,9 @@ from m5.objects import *
 # Here we setup a MESI Two Level Cache Hierarchy.
 cache_hierarchy = MESITwoLevelCacheHierarchy(
     l1d_size="20kB",
-    l1d_assoc=10,
+    l1d_assoc=5,
     l1i_size="20kB",
-    l1i_assoc=10,
+    l1i_assoc=5,
     l2_size="128kB",
     l2_assoc=20,
     num_l2_banks=1,
