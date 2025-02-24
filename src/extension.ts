@@ -88,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
       });
     }
 
-    /* Bar chart WebView Panel 생성 */
+    // Bar chart WebView Panel 생성 
     const statsPanel = vscode.window.createWebviewPanel(
       'barChart',
       'Bar chart Visualization',
@@ -125,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(runGem5Command, runProfileCommand, runSoCDesignCommand, runLogCommand, runParseCommand, runScatterPlotCommand);
 }
 
-/* Webview HTML 내용 생성 (gem5 stats.txt visualization) */
+/* Webview HTML 내용 생성 (bar chart visualization) */
 function barChartWebviewContent(): string {
   return `
         <!DOCTYPE html>

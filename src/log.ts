@@ -22,25 +22,6 @@ async function runGem5AndStreamLogs(panel: vscode.WebviewPanel) {
   gem5Process.on("close", (code) => {
     panel.webview.postMessage({ type: "exit", content: `gem5 종료 (코드: ${code})` });
   });
-
-  // WebView에서 메시지 수신
-  panel.webview.onDidReceiveMessage((message) => {
-    if (message.type === "navigate") {
-      openFileAtLine(message.file, message.line);
-    }
-  });
-}
-
-/* 특정 파일의 해당 줄로 이동 */
-function openFileAtLine(filePath: string, lineNumber: number) {
-  const fileUri = vscode.Uri.file(filePath);
-  vscode.workspace.openTextDocument(fileUri).then((doc) => {
-    vscode.window.showTextDocument(doc).then((editor) => {
-      const position = new vscode.Position(lineNumber - 1, 0);
-      editor.selection = new vscode.Selection(position, position);
-      editor.revealRange(new vscode.Range(position, position)); // 해당 위치가 보이도록 스크롤
-    });
-  });
 }
 
 export function createLogWebview() {

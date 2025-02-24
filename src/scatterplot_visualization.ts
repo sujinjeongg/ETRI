@@ -15,7 +15,6 @@ async function loadScatterplotData(): Promise<any> {
     });
 }
 
-/* ScatterPlot WebView Panel 생성 */
 export function createScatterplotWebview() {
     const scatterPlotPanel = vscode.window.createWebviewPanel(
         "ScatterPlot",
@@ -45,7 +44,7 @@ export function createScatterplotWebview() {
     console.log("ScatterPlot WebView message handler registered");
 }
 
-/* WebView HTML 컨텐츠 생성 */
+/* WebView HTML 내용 생성 (scatter plot) */
 function getScatterPlotWebviewContent(): string {
     return `
         <!DOCTYPE html>
@@ -130,14 +129,14 @@ function getScatterPlotWebviewContent(): string {
                     g.append("g")
                         .attr("transform", \`translate(0,\${innerHeight})\`)
                         .call(d3.axisBottom(xScale))
-                        .selectAll("path, line") // X축의 색상을 검정으로 변경
+                        .selectAll("path, line") 
                         .style("stroke", "black");
                     g.append("g").call(d3.axisLeft(yScale));
 
-                    // Y축
+                    // y축
                     g.append("g")
                         .call(d3.axisLeft(yScale))
-                        .selectAll("path, line") // Y축의 색상을 검정으로 변경
+                        .selectAll("path, line") 
                         .style("stroke", "black");
 
                     // 데이터 포인트 추가
@@ -156,7 +155,7 @@ function getScatterPlotWebviewContent(): string {
                         .enter()
                         .append("text")
                         .attr("class", "label")
-                        .attr("x", d => xScale(d.x) - 2)  // 점 오른쪽에 표시
+                        .attr("x", d => xScale(d.x) - 2)  // 점 왼쪽에 표시
                         .attr("y", d => yScale(d.y) - 10)
                         .text(d => d.script)
                         .style("font-size", "12px")

@@ -21,7 +21,7 @@ export async function runGem5AndParse() {
     // stats.txt 변경 감지 후 파싱 실행
     fs.watchFile(statsFilePath, { interval: 50000 }, (curr, prev) => {
         if (curr.mtime > prev.mtime) {
-            console.log("✅ stats.txt 파일이 업데이트됨! 데이터 파싱 시작...");
+            console.log("stats.txt 파일이 업데이트됨! 데이터 파싱 시작...");
 
             // 약간의 지연 후 실행 (파일이 완전히 쓰일 시간을 주기 위해)
             setTimeout(() => {

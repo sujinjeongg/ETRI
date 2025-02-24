@@ -92,7 +92,6 @@ export function createSoCDesignWebview() {
         if (message.type === 'runSimulation') {
             const configData = message.data;
 
-            // configData를 socDesignAndRun에 전달
             socDesignAndRun(configData);
         }
     });
@@ -125,7 +124,8 @@ function getSoCDesignWebviewContent(): string {
                 <option value="simple">Simple</option>
             </select><br><br>
             <label>Address Range (MB):</label><input id="addrRange" type="number" value="128"><br><br>
-            <label>CPU type:</label><select id="cpu">
+            <label>CPU type:</label>
+            <select id="cpu">
                 <option value="X86AtomicSimpleCPU">X86AtomicSimpleCPU</option>
                 <option value="TimingSimpleCPU">TimingSimpleCPU</option>
                 <option value="O3CPU">O3CPU</option>

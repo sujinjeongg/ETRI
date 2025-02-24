@@ -19,14 +19,12 @@ function loadProfiles(): any[] {
     return [];
 }
 
-/* gem5 실행 파일, parameters 설정 (profiles.json에서 정보 불러오거나 사용자가 직접 입력) 후 gem5 실행 */
+/* script 파일, parameters 설정 (profiles.json에 저장된 정보 중에 선택하거나 사용자가 직접 입력) 후 gem5 실행 */
 export async function selectAndRunProfile(): Promise<void> {
-    console.log('함수 시작');
+    // profiles.json 데이터 불러오기
     const profilesData = loadProfiles();
 
-    console.log('함수 시작');
-
-    // profiles.json에서 선택하거나 직접 입력 옵션 제공
+    // profiles.json에 저장된 정보 중에 선택하거나 직접 입력 옵션 제공
     const options = profilesData.map(profile => profile.name).concat('Enter script path manually');
     const selectedOption = await vscode.window.showQuickPick(options, { placeHolder: 'Select a profile or enter a script path manually' });
 
