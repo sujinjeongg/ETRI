@@ -1,75 +1,56 @@
-<<<<<<< HEAD
 # ETRI
-=======
-# SoCExtension README
-
-This is the README for your extension "SoCExtension". After writing up a brief description, we recommend including the following sections.
+======================================================================================================
+# SoC IDE Extension
+VS Code에서 SoC 설계와 시뮬레이션을 쉽게 할 수 있도록 돕는 vs code 확장 통합개발환경입니다.
 
 ## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- SoC 설계 지원
+- stats.txt 성능 데이터 시각화
+- 프로파일 저장 및 불러오기 지원
+- 로그 WebView 지원
 
 ## Extension Settings
+vs code extension 개발을 위한 설정
+1. install yo generate-code
+2. yo code
+3. node.js 버전 문제 발생 시 해결 방법 : curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh 
+    | bash; source ~/.bashrc; nvm ls-remote; nvm install --lts; node –v
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+vs code에서 개발된 vs code extension 화면 확인
+1. npm run compile (tsc –watch 명령으로 컴파일 자동화 가능) 
+2. `F5`를 눌러 VS Code에서 확장 기능을 실행
+3. `ctrl+shift+p`를 눌러 명령 창 열기
+4. `Run gem5` 등의 명령 입력
 
-For example:
+Gem5 설치
+1. git clone https://github.com/gem5/gem5 
+2. cd gem5
+3. scons build/ALL/gem5.opt –j`nproc` (`nproc` 자리에는 원하는 개수로 변경 (예: 12))
 
-This extension contributes the following settings:
+## How to use IDE
+- `Ctrl + Shift + P` → "Run gem5"등의 명령 실행
+- "Run gem5" -> script file path 입력 -> gem5 자동 실행 -> bar chart WebView 열림 (성능 지표 다중 선택 가능)
+- "Run gem5 with parsing" -> script file path 입력 -> gem5 자동 실행 -> stats.txt 데이터 파싱됨 -> scatterplot_stats.json 파일에 데이터 저장됨
+- "Run gem5 with SoC Design" -> cache size, cpu type, memory mode 등 하드웨어 설정 값 입력 -> Run Simulation 버튼 클릭 -> 설정 값 기반 script file 생성됨 -> gem5 자동 실행
+- "Visualize ScatterPlot" -> x,y축 성능 지표 선택 -> Update Chart 버튼 클릭 -> 산점도에 각 스크립트 파일 표시됨(scatterplot_stats.json에 저장된 스크립트 파일들의 성능 데이터 기반)
+- "Run gem5 with profile" -> "Enter script path manually" 클릭 -> script file path 입력 -> profiles.json 파일에 script file name, script file path, gem5 설정 정보 저장됨 -> vs code 재시작 후 script file name 클릭시 gem5 자동 실행
+- "Run gem5 with log" -> script file path 입력 -> gem5 자동 실행 -> log WebView 열림 (로그 내 검색 가능)
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
->>>>>>> ed6d118 (first commit)
+## Directory Structure
+```
+📂 SoCExtension
+ ├── 📂 gem5             # gem5 시뮬레이터
+ ├── 📂 src              # 소스 코드
+ │   ├── 📜 extension.ts       # 메인 실행 
+ │   ├── 📜 generated_soc_script.py    # socDesign.ts에서 자동 생성되는 script file
+ │   ├── 📜 log.ts       # log WebView 
+ │   ├── 📜 profiles.json       # 프로파일 데이터
+ │   ├── 📜 profiles.ts       # 프로파일 불러오기 및 저장 
+ │   ├── 📜 scatterplot_parse.ts       # 산점도를 위한 stats.txt 파싱 
+ │   ├── 📜 scatterplot_stats.json       # scatterplot_parse.ts에서 파싱한 데이터 저장 
+ │   ├── 📜 scatterplot_visualization.ts       # 산점도 시각화 
+ │   ├── 📜 socDesign.ts      # SoC 설계 
+ │   ├── 📜 stats.ts      # bar chart 시각화를 위한 stats.txt 파싱 
+ ├── 📜 README.md        # 이 파일
+ ├── 📜 package.json     # 패키지 설정
+```
