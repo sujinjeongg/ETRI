@@ -61,7 +61,7 @@ function getScatterPlotWebviewContent(): string {
             <select id="x-axis"></select><br>
             <label for="y-axis">Y Axis:</label>
             <select id="y-axis"></select>
-            <button onclick="updateChart()">Update Chart</button>
+            <button onclick="updateChart()">Update Chart</button><br>
             <svg width="800" height="400" style="background-color: white;"></svg>
             
             <script>
