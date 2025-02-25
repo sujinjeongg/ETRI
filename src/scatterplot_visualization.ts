@@ -114,11 +114,11 @@ function getScatterPlotWebviewContent(): string {
                     const yPadding = (yExtent[1] - yExtent[0]) * 0.1;
 
                     const xScale = d3.scaleLinear()
-                        .domain([xExtent[0] - xPadding, xExtent[1] + xPadding]) // 좌우로 10% 확장
+                        .domain([xExtent[0] - xPadding, xExtent[1] + xPadding])  // x범위 설정
                         .range([0, innerWidth]);
 
                     const yScale = d3.scaleLinear()
-                        .domain([yExtent[0] - yPadding, yExtent[1] + yPadding]) // 위아래로 10% 확장
+                        .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])  // y범위 설정
                         .range([innerHeight, 0]);
 
                     const colorScale = d3.scaleOrdinal(d3.schemeCategory10); // 각 점에 다른 색상 적용
@@ -128,14 +128,13 @@ function getScatterPlotWebviewContent(): string {
                     // x축
                     g.append("g")
                         .attr("transform", \`translate(0,\${innerHeight})\`)
-                        .call(d3.axisBottom(xScale))
+                        .call(d3.axisBottom(xScale).ticks(5)) // ticks(5): 적절한 개수로 자동 조정
                         .selectAll("path, line") 
                         .style("stroke", "black");
-                    g.append("g").call(d3.axisLeft(yScale));
 
                     // y축
                     g.append("g")
-                        .call(d3.axisLeft(yScale))
+                        .call(d3.axisLeft(yScale).ticks(5)) // ticks(5): 적절한 개수로 자동 조정
                         .selectAll("path, line") 
                         .style("stroke", "black");
 
